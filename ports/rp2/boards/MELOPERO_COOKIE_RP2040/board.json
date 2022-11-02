@@ -1,0 +1,22 @@
+{
+    "deploy": [
+        "../deploy.md"
+    ],
+    "docs": "",
+    "features": [
+        "Breadboard Friendly",
+        "Cookie",
+        "WS2812 matrix display",
+        "SPI Flash",
+        "STEMMA QT/QWIIC",
+        "USB-C"
+    ],
+    "images": [
+        ""
+    ],
+    "mcu": "rp2040",
+    "product": "Cookie RP2040",
+    "thumbnail": "",
+    "url": "https://www.melopero.com/melopero-cookie-rp2040",
+    "vendor": "Melopero"
+}
