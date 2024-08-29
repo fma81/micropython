@@ -1,3 +1,8 @@
+BOARD ?= mps2-an385
+
+# Make the build directory reflect the board.
+BUILD ?= build-$(BOARD)
+
 include ../../py/mkenv.mk
 -include mpconfigport.mk
 
@@ -6,46 +11,56 @@ QSTR_DEFS = qstrdefsport.h
 
 # MicroPython feature configurations
 MICROPY_ROM_TEXT_COMPRESSION ?= 1
+FROZEN_MANIFEST ?= "freeze('test-frzmpy')"
 
 # include py core make definitions
 include $(TOP)/py/py.mk
 include $(TOP)/extmod/extmod.mk
 
-BOARD ?= mps2-an385
+CFLAGS += -DMICROPY_HW_BOARD_NAME='"$(BOARD)"'
+QEMU_ARGS += -machine $(BOARD) -nographic -monitor null -semihosting
 
 ifeq ($(BOARD),netduino2)
 CFLAGS += -mthumb -mcpu=cortex-m3 -mfloat-abi=soft
 CFLAGS += -DQEMU_SOC_STM32
+CFLAGS += -DMICROPY_HW_MCU_NAME='"STM32"'
 LDSCRIPT = stm32.ld
-SRC_BOARD_O = shared/runtime/gchelper_native.o shared/runtime/gchelper_m3.o
+SRC_BOARD_O = shared/runtime/gchelper_native.o shared/runtime/gchelper_thumb2.o
 MPY_CROSS_FLAGS += -march=armv7m
 endif
 
 ifeq ($(BOARD),microbit)
 CFLAGS += -mthumb -mcpu=cortex-m0 -mfloat-abi=soft
 CFLAGS += -DQEMU_SOC_NRF51
+CFLAGS += -DMICROPY_HW_MCU_NAME='"nRF51"'
 LDSCRIPT = nrf51.ld
-QEMU_EXTRA = -global nrf51-soc.flash-size=1048576 -global nrf51-soc.sram-size=262144
-SRC_BOARD_O = shared/runtime/gchelper_native.o shared/runtime/gchelper_m0.o
+QEMU_ARGS += -global nrf51-soc.flash-size=1048576 -global nrf51-soc.sram-size=262144
+SRC_BOARD_O = shared/runtime/gchelper_native.o shared/runtime/gchelper_thumb1.o
 MPY_CROSS_FLAGS += -march=armv7m
 endif
 
 ifeq ($(BOARD),mps2-an385)
 CFLAGS += -mthumb -mcpu=cortex-m3 -mfloat-abi=soft
 CFLAGS += -DQEMU_SOC_MPS2
+CFLAGS += -DMICROPY_HW_MCU_NAME='"Cortex-M3"'
 LDSCRIPT = mps2.ld
-SRC_BOARD_O = shared/runtime/gchelper_native.o shared/runtime/gchelper_m3.o
+SRC_BOARD_O = shared/runtime/gchelper_native.o shared/runtime/gchelper_thumb2.o
 MPY_CROSS_FLAGS += -march=armv7m
 endif
 
 ifeq ($(BOARD),sabrelite)
 CFLAGS += -mcpu=cortex-a9
 CFLAGS += -DQEMU_SOC_IMX6
+CFLAGS += -DMICROPY_HW_MCU_NAME='"Cortex-A9"'
 LDSCRIPT = imx6.ld
-QEMU_EXTRA = -m 128M
+QEMU_ARGS += -m 128M
 SRC_BOARD_O = shared/runtime/gchelper_generic.o
 # It's really armv7a but closest supported value is armv6.
 MPY_CROSS_FLAGS += -march=armv6
+# Cortex-A9 should support unaligned-access, but qemu doesn't seem to.
+CFLAGS += -mno-unaligned-access
+# These don't work on Cortex-A9.
+TESTS_EXCLUDE = --exclude '(asmdiv|asmspecialregs).py'
 endif
 
 CROSS_COMPILE ?= arm-none-eabi-
@@ -78,38 +93,20 @@ LIBS = $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
 SRC_COMMON_C = \
 	startup.c \
 	uart.c \
-	modmachine.c \
+	mphalport.c \
 	shared/libc/string0.c \
+	shared/readline/readline.c \
+	shared/runtime/interrupt_char.c \
+	shared/runtime/pyexec.c \
+	shared/runtime/semihosting_arm.c \
+	shared/runtime/stdout_helpers.c \
 	shared/runtime/sys_stdio_mphal.c \
 
 SRC_RUN_C = \
 	main.c \
 
-SRC_TEST_C = \
-	test_main.c \
-	lib/tinytest/tinytest.c \
-
-LIB_SRC_C += $(addprefix lib/,\
-	libm/math.c \
-	libm/fmodf.c \
-	libm/nearbyintf.c \
-	libm/ef_sqrt.c \
-	libm/kf_rem_pio2.c \
-	libm/kf_sin.c \
-	libm/kf_cos.c \
-	libm/kf_tan.c \
-	libm/ef_rem_pio2.c \
-	libm/sf_sin.c \
-	libm/sf_cos.c \
-	libm/sf_tan.c \
-	libm/sf_frexp.c \
-	libm/sf_modf.c \
-	libm/sf_ldexp.c \
-	libm/asinfacosf.c \
-	libm/atanf.c \
-	libm/atan2f.c \
-	libm/roundf.c \
-	)
+LIB_SRC_C += $(SRC_LIB_LIBM_C)
+LIB_SRC_C += $(SRC_LIB_LIBM_SQRT_SW_C)
 
 OBJ_COMMON =
 OBJ_COMMON += $(PY_O)
@@ -133,16 +130,21 @@ OBJ = $(OBJ_COMMON) $(OBJ_RUN) $(OBJ_TEST)
 # List of sources for qstr extraction
 SRC_QSTR += $(SRC_COMMON_C) $(SRC_RUN_C) $(LIB_SRC_C)
 
-ifneq ($(FROZEN_MANIFEST),)
-CFLAGS += -DMICROPY_MODULE_FROZEN_STR
-CFLAGS += -DMICROPY_MODULE_FROZEN_MPY
-CFLAGS += -DMICROPY_QSTR_EXTRA_POOL=mp_qstr_frozen_const_pool
-endif
+all: $(BUILD)/firmware.elf
 
-all: run
+.PHONY: repl
+repl: $(BUILD)/firmware.elf
+	$(ECHO) "Use machine.reset() to exit"
+	qemu-system-arm $(QEMU_ARGS) -serial mon:stdio -kernel $<
 
+.PHONY: run
 run: $(BUILD)/firmware.elf
-	qemu-system-arm -machine $(BOARD) $(QEMU_EXTRA) -nographic -monitor null -semihosting -kernel $<
+	qemu-system-arm $(QEMU_ARGS) -serial pty -kernel $<
+
+.PHONY: test
+test: $(BUILD)/firmware.elf
+	$(eval DIRNAME=ports/$(notdir $(CURDIR)))
+	cd $(TOP)/tests && ./run-tests.py --target qemu-arm --device execpty:"qemu-system-arm $(QEMU_ARGS) -serial pty -kernel ../$(DIRNAME)/$<" $(TESTS_EXCLUDE)
 
 ## `$(LD)` doesn't seem to like `--specs` for some reason, but we can just use `$(CC)` here.
 $(BUILD)/firmware.elf: $(LDSCRIPT) $(ALL_OBJ_RUN)

@@ -28,7 +28,7 @@
 #include "py/mphal.h"
 #include "extmod/modnetwork.h"
 
-#if defined(MICROPY_HW_ETH_MDC)
+#if defined(IOMUX_TABLE_ENET)
 
 #include "fsl_phy.h"
 #include "eth.h"
@@ -36,11 +36,17 @@
 #include "hal/phy/device/phydp83825/fsl_phydp83825.h"
 #include "hal/phy/device/phydp83848/fsl_phydp83848.h"
 #include "hal/phy/device/phylan8720/fsl_phylan8720.h"
+#include "hal/phy/device/phyrtl8211f/fsl_phyrtl8211f.h"
 
 #include "lwip/netif.h"
+#include "lwip/apps/mdns.h"
 
 #ifndef ENET_TX_CLK_OUTPUT
 #define ENET_TX_CLK_OUTPUT true
+#endif
+
+#ifndef ENET_1_TX_CLK_OUTPUT
+#define ENET_1_TX_CLK_OUTPUT true
 #endif
 
 typedef struct _network_lan_obj_t {
@@ -48,13 +54,18 @@ typedef struct _network_lan_obj_t {
     eth_t *eth;
 } network_lan_obj_t;
 
-STATIC const network_lan_obj_t network_lan_eth0 = { { &network_lan_type }, &eth_instance };
 
-STATIC void network_lan_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind) {
+static const network_lan_obj_t network_lan_eth0 = { { &network_lan_type }, &eth_instance0 };
+#if defined(ENET_DUAL_PORT)
+static const network_lan_obj_t network_lan_eth1 = { { &network_lan_type }, &eth_instance1 };
+#endif
+
+static void network_lan_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind) {
     network_lan_obj_t *self = MP_OBJ_TO_PTR(self_in);
     struct netif *netif = eth_netif(self->eth);
     int status = eth_link_status(self->eth);
-    mp_printf(print, "<ETH %u %u.%u.%u.%u>",
+    mp_printf(print, "<ETH%d status=%u ip=%u.%u.%u.%u>",
+        self->eth == &eth_instance0 ? 0 : 1,
         status,
         netif->ip_addr.addr & 0xff,
         netif->ip_addr.addr >> 8 & 0xff,
@@ -63,19 +74,35 @@ STATIC void network_lan_print(const mp_print_t *print, mp_obj_t self_in, mp_prin
         );
 }
 
-STATIC mp_obj_t network_lan_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args) {
-    enum { ARG_id, ARG_phy_type, ARG_phy_addr, ARG_phy_clock};
+static mp_obj_t network_lan_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args) {
+    enum { ARG_id, ARG_phy_type, ARG_phy_addr, ARG_ref_clk_mode};
     static const mp_arg_t allowed_args[] = {
         { MP_QSTR_id, MP_ARG_INT, {.u_int = 0} },
         { MP_QSTR_phy_type, MP_ARG_KW_ONLY | MP_ARG_INT, {.u_int = -1} },
-        { MP_QSTR_phy_addr, MP_ARG_KW_ONLY | MP_ARG_INT, {.u_int = ENET_PHY_ADDRESS} },
-        { MP_QSTR_phy_clock, MP_ARG_KW_ONLY | MP_ARG_INT, {.u_int = ENET_TX_CLK_OUTPUT} },
+        { MP_QSTR_phy_addr, MP_ARG_KW_ONLY | MP_ARG_INT, {.u_int = -1} },
+        { MP_QSTR_ref_clk_mode, MP_ARG_KW_ONLY | MP_ARG_INT, {.u_int = -1} },
     };
     // Parse args.
     mp_arg_val_t args[MP_ARRAY_SIZE(allowed_args)];
     mp_arg_parse_all_kw_array(n_args, n_kw, all_args, MP_ARRAY_SIZE(allowed_args), allowed_args, args);
 
-    const phy_operations_t *phy_ops = &ENET_PHY_OPS;
+    const phy_operations_t *phy_ops;
+    int phy_addr;
+    bool phy_clock;
+
+    int mac_id = args[ARG_id].u_int;
+    // set default
+    if (mac_id == 0) {
+        phy_ops = &ENET_PHY_OPS;
+        phy_addr = ENET_PHY_ADDRESS;
+        phy_clock = ENET_TX_CLK_OUTPUT;
+    #if defined(ENET_DUAL_PORT)
+    } else {
+        phy_ops = &ENET_1_PHY_OPS;
+        phy_addr = ENET_1_PHY_ADDRESS;
+        phy_clock = ENET_1_TX_CLK_OUTPUT;
+    #endif
+    }
 
     // Select PHY driver
     int phy_type = args[ARG_phy_type].u_int;
@@ -88,34 +115,40 @@ STATIC mp_obj_t network_lan_make_new(const mp_obj_type_t *type, size_t n_args, s
             phy_ops = &phydp83848_ops;
         } else if (phy_type == PHY_LAN8720) {
             phy_ops = &phylan8720_ops;
+        } else if (phy_type == PHY_RTL8211F) {
+            phy_ops = &phyrtl8211f_ops;
         } else {
             mp_raise_msg_varg(&mp_type_ValueError, MP_ERROR_TEXT("Invalid value %d for phy"), phy_type);
         }
     }
-    int phy_addr = args[ARG_phy_addr].u_int;
+    if (args[ARG_phy_addr].u_int != -1) {
+        phy_addr = args[ARG_phy_addr].u_int;
+    }
 
-    bool phy_clock = args[ARG_phy_clock].u_int;
+    if (args[ARG_ref_clk_mode].u_int != -1) {
+        phy_clock = args[ARG_ref_clk_mode].u_int;
+    }
 
     // Prepare for two ETH interfaces.
     const network_lan_obj_t *self;
-    int mac_id = args[ARG_id].u_int;
     if (mac_id == 0) {
         self = &network_lan_eth0;
-        mac_id = MP_HAL_MAC_ETH0;
+        eth_init_0(self->eth, MP_HAL_MAC_ETH0, phy_ops, phy_addr, phy_clock);
+    #if defined(ENET_DUAL_PORT)
     } else if (mac_id == 1) {
-        self = &network_lan_eth0;
-        mac_id = MP_HAL_MAC_ETH1;
+        self = &network_lan_eth1;
+        eth_init_1(self->eth, MP_HAL_MAC_ETH1, phy_ops, phy_addr, phy_clock);
+    #endif
     } else {
         mp_raise_msg_varg(&mp_type_ValueError, MP_ERROR_TEXT("Invalid LAN interface %d"), mac_id);
     }
 
-    eth_init(self->eth, mac_id, phy_ops, phy_addr, phy_clock);
     // register with network module
     mod_network_register_nic((mp_obj_t *)self);
     return MP_OBJ_FROM_PTR(self);
 }
 
-STATIC mp_obj_t network_lan_active(size_t n_args, const mp_obj_t *args) {
+static mp_obj_t network_lan_active(size_t n_args, const mp_obj_t *args) {
     network_lan_obj_t *self = MP_OBJ_TO_PTR(args[0]);
     if (n_args == 1) {
         return mp_obj_new_bool(eth_link_status(self->eth));
@@ -132,21 +165,27 @@ STATIC mp_obj_t network_lan_active(size_t n_args, const mp_obj_t *args) {
         return mp_const_none;
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(network_lan_active_obj, 1, 2, network_lan_active);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(network_lan_active_obj, 1, 2, network_lan_active);
 
-STATIC mp_obj_t network_lan_isconnected(mp_obj_t self_in) {
+static mp_obj_t network_lan_isconnected(mp_obj_t self_in) {
     network_lan_obj_t *self = MP_OBJ_TO_PTR(self_in);
     return mp_obj_new_bool(eth_link_status(self->eth) == 3);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(network_lan_isconnected_obj, network_lan_isconnected);
+static MP_DEFINE_CONST_FUN_OBJ_1(network_lan_isconnected_obj, network_lan_isconnected);
 
-STATIC mp_obj_t network_lan_ifconfig(size_t n_args, const mp_obj_t *args) {
+static mp_obj_t network_lan_ifconfig(size_t n_args, const mp_obj_t *args) {
     network_lan_obj_t *self = MP_OBJ_TO_PTR(args[0]);
     return mod_network_nic_ifconfig(eth_netif(self->eth), n_args - 1, args + 1);
 }
 MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(network_lan_ifconfig_obj, 1, 2, network_lan_ifconfig);
 
-STATIC mp_obj_t network_lan_status(size_t n_args, const mp_obj_t *args) {
+static mp_obj_t network_lan_ipconfig(size_t n_args, const mp_obj_t *args, mp_map_t *kwargs) {
+    network_lan_obj_t *self = MP_OBJ_TO_PTR(args[0]);
+    return mod_network_nic_ipconfig(eth_netif(self->eth), n_args - 1, args + 1, kwargs);
+}
+static MP_DEFINE_CONST_FUN_OBJ_KW(network_lan_ipconfig_obj, 1, network_lan_ipconfig);
+
+static mp_obj_t network_lan_status(size_t n_args, const mp_obj_t *args) {
     network_lan_obj_t *self = MP_OBJ_TO_PTR(args[0]);
     (void)self;
 
@@ -157,9 +196,9 @@ STATIC mp_obj_t network_lan_status(size_t n_args, const mp_obj_t *args) {
 
     mp_raise_ValueError(MP_ERROR_TEXT("unknown status param"));
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(network_lan_status_obj, 1, 2, network_lan_status);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(network_lan_status_obj, 1, 2, network_lan_status);
 
-STATIC mp_obj_t network_lan_config(size_t n_args, const mp_obj_t *args, mp_map_t *kwargs) {
+static mp_obj_t network_lan_config(size_t n_args, const mp_obj_t *args, mp_map_t *kwargs) {
     network_lan_obj_t *self = MP_OBJ_TO_PTR(args[0]);
 
     if (kwargs->used == 0) {
@@ -202,12 +241,13 @@ STATIC mp_obj_t network_lan_config(size_t n_args, const mp_obj_t *args, mp_map_t
         return mp_const_none;
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(network_lan_config_obj, 1, network_lan_config);
+static MP_DEFINE_CONST_FUN_OBJ_KW(network_lan_config_obj, 1, network_lan_config);
 
-STATIC const mp_rom_map_elem_t network_lan_locals_dict_table[] = {
+static const mp_rom_map_elem_t network_lan_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_active), MP_ROM_PTR(&network_lan_active_obj) },
     { MP_ROM_QSTR(MP_QSTR_isconnected), MP_ROM_PTR(&network_lan_isconnected_obj) },
     { MP_ROM_QSTR(MP_QSTR_ifconfig), MP_ROM_PTR(&network_lan_ifconfig_obj) },
+    { MP_ROM_QSTR(MP_QSTR_ipconfig), MP_ROM_PTR(&network_lan_ipconfig_obj) },
     { MP_ROM_QSTR(MP_QSTR_status), MP_ROM_PTR(&network_lan_status_obj) },
     { MP_ROM_QSTR(MP_QSTR_config), MP_ROM_PTR(&network_lan_config_obj) },
 
@@ -215,10 +255,11 @@ STATIC const mp_rom_map_elem_t network_lan_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_PHY_DP83825), MP_ROM_INT(PHY_DP83825) },
     { MP_ROM_QSTR(MP_QSTR_PHY_DP83848), MP_ROM_INT(PHY_DP83848) },
     { MP_ROM_QSTR(MP_QSTR_PHY_LAN8720), MP_ROM_INT(PHY_LAN8720) },
+    { MP_ROM_QSTR(MP_QSTR_PHY_RTL8211F), MP_ROM_INT(PHY_RTL8211F) },
     { MP_ROM_QSTR(MP_QSTR_IN), MP_ROM_INT(PHY_TX_CLK_IN) },
     { MP_ROM_QSTR(MP_QSTR_OUT), MP_ROM_INT(PHY_TX_CLK_OUT) },
 };
-STATIC MP_DEFINE_CONST_DICT(network_lan_locals_dict, network_lan_locals_dict_table);
+static MP_DEFINE_CONST_DICT(network_lan_locals_dict, network_lan_locals_dict_table);
 
 MP_DEFINE_CONST_OBJ_TYPE(
     network_lan_type,
@@ -230,4 +271,4 @@ MP_DEFINE_CONST_OBJ_TYPE(
     );
 
 
-#endif // defined(MICROPY_HW_ETH_MDC)
+#endif // defined(IOMUX_TABLE_ENET)

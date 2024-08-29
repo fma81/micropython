@@ -17,44 +17,53 @@ Adafruit ItsyBitsy M0 Express pin assignment table
 === ==== ============ ==== ==== ====== ====== ====== ======
 Pin GPIO Pin name     IRQ  ADC  Serial Serial TCC/TC TCC/TC
 === ==== ============ ==== ==== ====== ====== ====== ======
-  0 PA11           D0  11   19    0/3    2/3   1/1    0/3
-  1 PA10           D1  10   18    0/2    2/2   1/0    0/2
-  2 PA14           D2  14    -    2/2    4/2   3/0    0/4
-  3 PA09           D3   9   17    0/1    2/1   0/1    1/3
-  4 PA08           D4   -   16    0/0    2/0   0/0    1/2
-  5 PA15           D5  15    -    2/3    4/3   3/1    0/5
-  7 PA21           D7   5    -    5/3    3/3   7/1    0/7
-  9 PA07           D9   7    7     -     0/3   1/1     -
- 10 PA18          D10   2    -    1/2    3/2   3/0    0/2
- 11 PA16          D11   0    -    1/0    3/0   2/0    0/6
- 12 PA19          D12   3    -    1/3    3/3   3/1    0/3
- 13 PA17          D13   1    -    1/1    3/1   2/1    0/7
- 14 PA02           A0   2    0     -      -     -      -
- 15 PB08           A1   8    2     -     4/0   4/0     -
- 16 PB09           A2   9    3     -     4/1   4/1     -
- 17 PA04           A3   4    4     -     0/0   0/0     -
- 18 PA05           A4   5    5     -     0/1   0/1     -
- 19 PB02           A5   2    -     -     5/0   6/0     -
- 20 PA22          SDA   6    -    3/0    5/0   4/0    0/4
- 21 PA23          SCL   7    -    3/1    5/1   4/1    0/5
- 22 PB10         MOSI  10    -     -     4/2   5/0    0/4
- 23 PA12         MISO  12    -    2/0    4/0   2/0    0/6
- 24 PB11          SCK  11    -     -     4/3   5/1    0/5
- 25 PA00  DOTSTAR_CLK   0    -     -     1/0   2/0     -
- 26 PA01 DOTSTAR_DATA   1    -     -     1/1   2/1     -
- 27 PB22   FLASH_MOSI   6    -     -     5/2   7/0     -
- 28 PB03   FLASH_MISO   3    -     -     5/1   6/1     -
- 29 PB23    FLASH_SCK   7    -     -     5/3   7/1     -
+  2 PA02           A0   2   0     -       -     -      -
+ 40 PB08           A1   8   2     -      4/0   4/0     -
+ 41 PB09           A2   9   3     -      4/1   4/1     -
+  4 PA04           A3   4   4     -      0/0   0/0     -
+  5 PA05           A4   5   5     -      0/1   0/1     -
+ 34 PB02           A5   2  10     -      5/0   6/0     -
+ 11 PA11           D0  11  19    0/3     2/3   1/1    0/3
+ 10 PA10           D1  10  18    0/2     2/2   1/0    0/2
+ 14 PA14           D2  14   -    2/2     4/2   3/0    0/4
+  9 PA09           D3   9  17    0/1     2/1   0/1    1/3
+  8 PA08           D4   -  16    0/0     2/0   0/0    1/2
+ 15 PA15           D5  15   -    2/3     4/3   3/1    0/5
+ 21 PA21           D7   5   -    5/3     3/3   7/1    0/7
+  7 PA07           D9   7   7     -      0/3   1/1     -
+ 18 PA18          D10   2   -    1/2     3/2   3/0    0/2
+ 16 PA16          D11   0   -    1/0     3/0   2/0    0/6
+ 19 PA19          D12   3   -    1/3     3/3   3/1    0/3
+ 17 PA17          D13   1   -    1/1     3/1   2/1    0/7
+  0 PA00  DOTSTAR_CLK   0   -     -      1/0   2/0     -
+  1 PA01 DOTSTAR_DATA   1   -     -      1/1   2/1     -
+ 27 PA27     FLASH_CS  15   -     -       -     -      -
+ 35 PB03   FLASH_MISO   3  11     -      5/1   6/1     -
+ 54 PB22   FLASH_MOSI   6   -     -      5/2   7/0     -
+ 55 PB23    FLASH_SCK   7   -     -      5/3   7/1     -
+ 12 PA12         MISO  12   -    2/0     4/0   2/0    0/6
+ 42 PB10         MOSI  10   -     -      4/2   5/0    0/4
+ 43 PB11          SCK  11   -     -      4/3   5/1    0/5
+ 23 PA23          SCL   7   -    3/1     5/1   4/1    0/5
+ 22 PA22          SDA   6   -    3/0     5/0   4/0    0/4
+ 30 PA30        SWCLK  10   -     -      1/2   1/0     -
+ 31 PA31        SWDIO  11   -     -      1/3   1/1     -
+ 24 PA24       USB_DM  12   -    3/2     5/2   5/0    1/2
+ 25 PA25       USB_DP  13   -    3/3     5/3   5/1    1/3
+  3 PA03                3   1     -       -     -      -
+  6 PA06                6   6     -      0/2   1/0     -
+ 13 PA13               13   -    2/1     4/1   2/0    0/7
+ 20 PA20                4   -    5/2     3/2   7/0    0/4
+ 28 PA28                8   -     -       -     -      -
 === ==== ============ ==== ==== ====== ====== ====== ======
 
 
 Description of the columns:
 
 - *Pin* - The number that is expected at ``machine.Pin(n)``, if the pin is given
-  as a number. This is NOT the GPIO number, but the board pin number, as
-  given in the board specific definition file.
-- *GPIO* - The GPIO number.
-- *Pin Name* - The name of a Pin which is expected argument to ``machine.Pin("name")``.
+  as a number.
+- *GPIO* - The GPIO name, which can be used as argument to ``machine.Pin("name")``.
+- *Pin Name* - The boards name, which can be used as argument to ``machine.Pin("name")``.
 - *IRQ* - The IRQ number assigned to that GPIO, used internally by ``Pin.irq()``. When
   using ``Pin.irq()``, different pins must use different IRQs
 - *ADC* - The ADC channel assigned to the pin. When using ADC, different pins must
@@ -70,20 +79,22 @@ SAMD21 UART assignments
 ```````````````````````
 The UART devices and signals must be chosen according to the following rules:
 
-- The TX signal must be at a Pin with pad numbers 2 or 0, like Pin 1 with serial
+- The TX signal must be at a Pin with pad numbers 2 or 0, like Pin D1 with serial
   device 0 or 2.
 - The RX pin may be assigned to one of the other pads.
 
 Examples for Adafruit ItsyBitsy M0 Express:
 
-- uart 0 at pins 0/1  This is the default UART at the RX/TX labelled pins
-- uart 1 at pins 12/10
-- uart 2 at pins 0/1
-- uart 3 at pins 11/13
-- uart 4 at pins 2/5
+- uart 0 at pins D0/D1  This is the default UART at the RX/TX labelled pins
+- uart 1 at pins D12/D10
+- uart 2 at pins D0/D1
+- uart 3 at pins D11/D13
+- uart 4 at pins D2/D5
 - uart 5 at pins SCL/SDA
 
-or other combinations.
+or other combinations. For hardware flow control, tx must be at pad 0, rx at pad 1,
+rts at pad 2 and cts at pad 3. This applies for instance to
+UART 3 or UART 1 at the pins D13/D11/D10/D12 for rx/tx/rts/cts.
 
 SAMD21 I2C assignments
 ``````````````````````
@@ -95,8 +106,8 @@ The I2C devices and signals must be chosen according to the following rules:
 Examples for Adafruit ItsyBitsy M0 Express:
 
 - I2C 0 at Pin A3/A4
-- I2C 1 at pins 11/13
-- I2C 2 at the pins 4/3
+- I2C 1 at pins D11/D13
+- I2C 2 at the pins D4/D3
 - I2C 3 at the pins SDA/SCL This is the default I2C device at the SDA/SCl labelled pin
 - I2C 4 at the pins A1/A2
 - I2C 5 at the pins SDA/SCL,
@@ -105,17 +116,17 @@ or other combinations.
 
 SAMD21 SPI assignments
 ``````````````````````
-The I2C devices and signals must be chosen according to the following rules:
+The SPI devices and signals must be chosen according to the following rules:
 
 - The following pad number pairs are suitable for MOSI/SCK: 0/1, 2/3, 3/1, and 0/3.
 - The MISO signal must be at a Pin with a different pad number than MOSI or SCK.
 
 Examples for Adafruit ItsyBitsy M0 Express:
 
-- SPI 0 at pins 0/4/1
-- SPI 1 at pins 11/12/13
-- SPI 2 at pins 0/4/1
-- SPI 3 at pins 11/12/13
+- SPI 0 at pins D0/D4/D1
+- SPI 1 at pins D11/D12/D13
+- SPI 2 at pins D0/D4/D1
+- SPI 3 at pins D11/D12/D13
 - SPI 4 at Pin MOSI/MISO/SCK This is the default SPI device at the MOSI/MISO/SCK labelled pins.
 
 or other combinations.
@@ -158,14 +169,14 @@ Pin GPIO Pin name     IRQ  ADC  ADC  Serial Serial  TC    PWM   PWM
  22 PA22          D13   6    -    -    3/0    5/1   4/0   1/6   0/2
  34 PB02  DOTSTAR_CLK   2   14    -     -     5/0   6/0   2/2    -
  35 PB03 DOTSTAR_DATA   9   15    -     -     5/1   6/1    -     -
- 43 PB11     FLASH_CS  12    -    -     -     4/3   5/1   0/5   1/1
- 11 PA11   FLASH_HOLD  11   11    -    0/3    2/3   1/1   0/3   1/7
-  9 PA09   FLASH_MISO   9    9    3    0/1    2/0   0/1   0/1   1/5
-  8 PA08   FLASH_MOSI   -    8    2    0/0    2/1   0/0   0/0   1/4
- 42 PB10    FLASH_SCK  10    -    -     -     4/2   5/0   0/4   1/0
- 10 PA10     FLASH_WP  10   10    -    0/2    2/2   1/0   0/2   1/6
  55 PB23         MISO   7    -    -    1/3    5/3   7/1    -     -
   0 PA00         MOSI   0    -    -     -     1/0   2/0    -     -
+ 43 PB11      QSPI_CS  12    -    -     -     4/3   5/1   0/5   1/1
+  8 PA08      QSPI_D0   -    8    2    0/0    2/1   0/0   0/0   1/4
+  9 PA09      QSPI_D1   9    9    3    0/1    2/0   0/1   0/1   1/5
+ 10 PA10      QSPI_D2  10   10    -    0/2    2/2   1/0   0/2   1/6
+ 11 PA11      QSPI_D3  11   11    -    0/3    2/3   1/1   0/3   1/7
+ 42 PB10     QSPI_SCK  10    -    -     -     4/2   5/0   0/4   1/0
   1 PA01          SCK   1    -    -     -     1/1   2/1    -     -
  13 PA13          SCL  13    -    -    2/1    4/0   2/1   0/7   1/3
  12 PA12          SDA  12    -    -    2/0    4/1   2/0   0/6   1/2
@@ -181,10 +192,9 @@ Pin GPIO Pin name     IRQ  ADC  ADC  Serial Serial  TC    PWM   PWM
 Description of the columns:
 
 - *Pin* - The number that is expected at ``machine.Pin(n)``, if the pin is given
-  as a number. This is NOT the GPIO number, but the board pin number, as
-  given in the board specific definition file.
-- *GPIO* - The GPIO number.
-- *Pin Name* The name of a Pin which is expected argument to ``machine.Pin("name")``.
+  as a number.
+- *GPIO* - The GPIO name, which can be used as argument to ``machine.Pin("name")``.
+- *Pin Name* - The boards name, which can be used as argument to ``machine.Pin("name")``.
 - *IRQ* - The IRQ number assigned to that GPIO, used internally by ``Pin.irq()``. When
   using ``Pin.irq()``, different pins must use different IRQs
 - *ADC* - The ADC0/1 channel assigned to the pin. When using ADC, different pins must
@@ -201,20 +211,22 @@ SAMD51 UART assignments
 ```````````````````````
 The UART devices and signals must be chosen according to the following rules:
 
-- The TX signal must be at a Pin with pad numbers 0, like Pin 1 with serial
+- The TX signal must be at a Pin with pad numbers 0, like Pin D1 with serial
   device 3.
 - The RX pin may be assigned to one of the other pads.
 
 Examples for Adafruit ItsyBitsy 4 Express:
 
 - uart 0 at pins A4/A1
-- uart 1 at pins 1/0   This is the default UART at the RX/TX labelled pins
+- uart 1 at pins D1/D0   This is the default UART at the RX/TX labelled pins
 - uart 2 at pins SCL/SDA  This is the default I2C device at the SDA/SCl labelled pin
-- uart 3 at pins 0/1
+- uart 3 at pins D0/D1
 - uart 4 at pins SDA/SCL
 - uart 5 at pins D12/D13
 
-or other combinations.
+or other combinations. For hardware flow control, tx must be at pad 0, rx at pad 1,
+rts at pad 2 and cts at pad 3. This applies for instance to
+UART 5 at the pins D12/D13/D10/D11 for rx/tx/rts/cts.
 
 SAMD51 I2C assignments
 ``````````````````````
@@ -226,11 +238,11 @@ The I2C devices and signals must be chosen according to the following rules:
 Examples for Adafruit ItsyBitsy M0 Express:
 
 - I2C 0 at pins A3/A4
-- I2C 1 at pins 0/1
+- I2C 1 at pins D0/D1
 - I2C 2 at the pins SDA/SCL
-- I2C 3 at the pins 1/0
+- I2C 3 at the pins D1/D0
 - I2C 4 at the pins A2/A3
-- I2C 5 at the pins 12/13
+- I2C 5 at the pins D12/D13
 
 or other combinations.
 
@@ -244,8 +256,8 @@ The SPI devices and signals must be chosen according to the following rules:
 Examples for Adafruit ItsyBitsy M0 Express:
 
 - SPI 1 at Pin MOSI/MISO/SCK  This is the default SPI device at the MOSI/MISO/SCK labelled pins.
-- SPI 3 at pins 13/11/12
-- SPI 5 at pins 12/3/13
+- SPI 3 at pins D13/D11/D12
+- SPI 5 at pins D12/D3/D13
 
 or other combinations.
 
@@ -284,15 +296,15 @@ Pin GPIO Pin name     IRQ  ADC  ADC  Serial Serial  TC    PWM   PWM
  21 PA21          D11   5    -    -    5/3    3/3   7/1   1/5    0/1
  22 PA22          D12   6    -    -    3/0    5/1   4/0   1/6    0/2
  23 PA23          D13   7    -    -    3/1    5/0   4/1   1/7    0/3
- 43 PB11     FLASH_CS  12    -    -     -     4/3   5/1   0/5    1/1
- 11 PA11   FLASH_HOLD  11   11    -    0/3    2/3   1/1   0/3    1/7
-  9 PA09   FLASH_MISO   9    9    3    0/1    2/0   0/1   0/1    1/5
-  8 PA08   FLASH_MOSI   -    8    2    0/0    2/1   0/0   0/0    1/4
- 42 PB10    FLASH_SCK  10    -    -     -     4/2   5/0   0/4    1/0
- 10 PA10     FLASH_WP  10   10    -    0/2    2/2   1/0   0/2    1/6
  54 PB22         MISO  22    -    -    1/2    5/2   7/0    -      -
  55 PB23         MOSI   7    -    -    1/3    5/3   7/1    -      -
  35 PB03     NEOPIXEL   9   15    -     -     5/1   6/1    -      -
+ 43 PB11      QSPI_CS  12    -    -     -     4/3   5/1   0/5   1/1
+  8 PA08      QSPI_D0   -    8    2    0/0    2/1   0/0   0/0   1/4
+  9 PA09      QSPI_D1   9    9    3    0/1    2/0   0/1   0/1   1/5
+ 10 PA10      QSPI_D2  10   10    -    0/2    2/2   1/0   0/2   1/6
+ 11 PA11      QSPI_D3  11   11    -    0/3    2/3   1/1   0/3   1/7
+ 42 PB10     QSPI_SCK  10    -    -     -     4/2   5/0   0/4   1/0
  17 PA17          SCK   1    -    -    1/1    3/0   2/1   1/1    0/5
  13 PA13          SCL  13    -    -    2/1    4/0   2/1   0/7    1/3
  12 PA12          SDA  12    -    -    2/0    4/1   2/0   0/6    1/2
@@ -325,10 +337,79 @@ Adafruit ItsyBitsy M4 Express :ref:`samd51_pinout_table`.
 
 The default devices at the board are:
 
-- UART 5 at pins 0/1, labelled RX/TX
-- I2C 2 at pins 21/20, labelled SDA/SCL
-- SPI 1 at pins 22/23/24, labelled MOSI, MISO and SCK
-- DAC output on pins 14 and 15, labelled A0 and A1
+- UART 5 at pins D0/D1, labelled RX/TX
+- I2C 2 at pins PA12/PA13, labelled SDA/SCL
+- SPI 1 at pins PA23/PA22/PA17, labelled MOSI, MISO and SCK
+- DAC output on pins PA02 and PA05, labelled A0 and A1
+
+Adafruit Metro M4 Airlift pin assignment table
+----------------------------------------------
+
+=== ==== ============ ==== ==== ==== ====== ====== ===== ===== =====
+Pin GPIO Pin name     IRQ  ADC  ADC  Serial Serial  TC    PWM   PWM
+=== ==== ============ ==== ==== ==== ====== ====== ===== ===== =====
+  2 PA02           A0  2     0    -     -      -     -     -     -
+  5 PA05           A1  5     5    -     -     0/1   0/1    -     -
+  6 PA06           A2  6     6    -     -     0/2   1/0    -     -
+ 32 PB00           A3  9    12    -     -     5/2   7/0    -     -
+ 40 PB08           A4  8     2    0     -     4/0   4/0    -     -
+ 41 PB09           A5  9     3    1     -     4/1   4/1    -     -
+ 23 PA23           D0  7     -    -    3/1    5/0   4/1   1/7   0/3
+ 22 PA22           D1  6     -    -    3/0    5/1   4/0   1/6   0/2
+ 49 PB17           D2  1     -    -    5/1     -    6/1   3/1   0/5
+ 48 PB16           D3  0     -    -    5/0     -    6/0   3/0   0/4
+ 45 PB13           D4 13     -    -    4/1     -    4/1   3/1   0/1
+ 46 PB14           D5 14     -    -    4/2     -    5/0   4/0   0/2
+ 47 PB15           D6 15     -    -    4/3     -    5/1   4/1   0/3
+ 44 PB12           D7 12     -    -    4/0     -    4/0   3/0   0/0
+ 21 PA21           D8  5     -    -    5/3    3/3   7/1   1/5   0/1
+ 20 PA20           D9  4     -    -    5/2    3/2   7/0   1/4   0/0
+  3 PA03         AREF  3    10    -     -      -     -     -     -
+ 18 PA18          D10  2     -    -    1/2    3/2   3/0   1/2   0/6
+ 19 PA19          D11  3     -    -    1/3    3/3   3/1   1/3   0/7
+ 16 PA16          D13  0     -    -    1/0    3/1   2/0   1/0   0/4
+ 36 PB04     ESP_BUSY  4     -    6     -      -     -     -     -
+ 15 PA15       ESP_CS 15     -    -    2/3    4/3   3/1   2/1   1/3
+ 33 PB01    ESP_GPIO0  1    13    -     -     5/3   7/1    -     -
+ 37 PB05    ESP_RESET  5     -    7     -      -     -     -     -
+ 55 PB23      ESP_RTS  7     -    -    1/3    5/3   7/1    -     -
+  7 PA07       ESP_RX  7     7    -     -     0/3   1/1    -     -
+  4 PA04       ESP_TX  4     4    -     -     0/0   0/0    -     -
+ 43 PB11     FLASH_CS 12     -    -     -     4/3   5/1   0/5   1/1
+ 11 PA11   FLASH_HOLD 11    11    -    0/3    2/3   1/1   0/3   1/7
+  9 PA09   FLASH_MISO  9     9    3    0/1    2/0   0/1   0/1   1/5
+  8 PA08   FLASH_MOSI  -     8    2    0/0    2/1   0/0   0/0   1/4
+ 42 PB10    FLASH_SCK 10     -    -     -     4/2   5/0   0/4   1/0
+ 10 PA10     FLASH_WP 10    10    -    0/2    2/2   1/0   0/2   1/6
+ 14 PA14         MISO 14     -    -    2/2    4/2   3/0   2/0   1/2
+ 12 PA12         MOSI 12     -    -    2/0    4/1   2/0   0/6   1/2
+ 54 PB22     NEOPIXEL 22     -    -    1/2    5/2   7/0    -     -
+ 38 PB06        RXLED  6     -    8     -      -     -     -     -
+ 13 PA13          SCK 13     -    -    2/1    4/0   2/1   0/7   1/3
+ 35 PB03          SCL  9    15    -     -     5/1   6/1    -     -
+ 34 PB02          SDA  2    14    -     -     5/0   6/0   2/2    -
+ 30 PA30        SWCLK 14     -    -    7/2    1/2   6/0   2/0    -
+ 31 PA31        SWDIO 15     -    -    7/3    1/3   6/1   2/1    -
+ 62 PB30          SWO 14     -    -    7/0    5/1   0/0   4/0   0/6
+ 39 PB07        TXLED  7     -    9     -      -     -     -     -
+ 24 PA24       USB_DM  8     -    -    3/2    5/2   5/0   2/2    -
+ 25 PA25       USB_DP  9     -    -    3/3    5/3   5/1    -     -
+ 17 PA17   USB_HOSTEN  1     -    -    1/1    3/0   2/1   1/1   0/5
+  0 PA00            -  0     -    -     -     1/0   2/0    -     -
+  1 PA01            -  1     -    -     -     1/1   2/1    -     -
+ 27 PA27            - 11     -    -     -      -     -     -     -
+ 63 PB31            - 15     -    -    7/1    5/0   0/1   4/1   0/7
+=== ==== ============ ==== ==== ==== ====== ====== ===== ===== =====
+
+For the definition of the table columns see the explanation at the table
+for Adafruit ItsyBitsy M4 Express :ref:`samd51_pinout_table`.
+
+The default devices at the board are:
+
+- UART 3 at pins PA23/PA22, labelled D0/D1 resp. RX/TX
+- I2C 5 at pins PB02/PB03, labelled SDA/SCL
+- SPI 4 at pins PA12/PA14/PA13, labelled MOSI, MISO and SCK
+- DAC output on pins PA02 and PA05, labelled A0 and A1
 
 SEEED XIAO pin assignment table
 -------------------------------
@@ -381,10 +462,10 @@ Adafruit ItsyBitsy M0 Express :ref:`samd21_pinout_table`.
 
 The default devices at the board are:
 
-- UART 4 at pins 7/6, labelled A6_D6/A7_D7
-- I2C 2 at pins 4/5, labelled A4_D4/A5_D5
-- SPI 0 at pins 10/9/8, labelled A10_D10, A9_D9 and A8_D8
-- DAC output on pin 0, labelled A0_D0
+- UART 4 at pins PB08/PB09, labelled A6_D6/A7_D7
+- I2C 2 at pins PA08/PA09, labelled A4_D4/A5_D5
+- SPI 0 at pins PA06/PA05/PA07, labelled A10_D10, A9_D9 and A8_D8
+- DAC output on pin PA02, labelled A0_D0
 
 Adafruit Feather M0 Express pin assignment table
 ------------------------------------------------
@@ -437,10 +518,10 @@ Adafruit ItsyBitsy M0 Express :ref:`samd21_pinout_table`.
 
 The default devices at the board are:
 
-- UART 5 at pins 21/20, labelled RX/TX
-- I2C 3 at pins 22/23, labelled SDA/SCL
-- SPI 4 at pins 24/25/26, labelled MOSI, MISO and SCK
-- DAC output on pin 14, labelled A0
+- UART 5 at pins PB23/PB22, labelled RX/TX
+- I2C 3 at pins PA22/PA23, labelled SDA/SCL
+- SPI 4 at pins PA10/PA12/PA11, labelled MOSI, MISO and SCK
+- DAC output on pin PA02, labelled A0
 
 Adafruit Trinket M0 pin assignment table
 ------------------------------------------------
@@ -481,10 +562,10 @@ Adafruit ItsyBitsy M0 Express :ref:`samd21_pinout_table`.
 
 The default devices at the board are:
 
-- UART 0 at pins 3/4, labelled D3/D4
-- I2C 2 at pins 0/2, labelled D0/D2
-- SPI 0 at pins 4/2/3, labelled D4, D2 and D0
-- DAC output on pin 1, labelled D1
+- UART 0 at pins PA07/PA06, labelled D3/D4
+- I2C 2 at pins PA08/PA09, labelled D0/D2
+- SPI 0 at pins PA06/PA09/PA08, labelled D4, D2 and D0
+- DAC output on pin PA02, labelled D1
 
 SAMD21 Xplained PRO pin assignment table
 ----------------------------------------
@@ -550,7 +631,7 @@ For the definition of the table columns see the explanation at the table for
 Adafruit ItsyBitsy M0 Express :ref:`samd21_pinout_table`.
 
 There are no pins labelled for default devices on this board. DAC output
-is on pin 32, labelled EXT3_PIN3
+is on pin PA02, labelled EXT3_PIN3
 
 Minisam M4 pin assignment table
 -------------------------------
@@ -577,6 +658,12 @@ Pin GPIO Pin name     IRQ  ADC  ADC  Serial Serial  TC    PWM   PWM
  15 PA15          LED  15    -    -    2/3    4/3   3/1   2/1   1/3
  55 PB23         MISO   7    -    -    1/3    5/3   7/1    -     -
  54 PB22         MOSI  22    -    -    1/2    5/2   7/0    -     -
+ 43 PB11      QSPI_CS  12    -    -     -     4/3   5/1   0/5   1/1
+  8 PA08      QSPI_D0   -    8    2    0/0    2/1   0/0   0/0   1/4
+  9 PA09      QSPI_D1   9    9    3    0/1    2/0   0/1   0/1   1/5
+ 10 PA10      QSPI_D2  10   10    -    0/2    2/2   1/0   0/2   1/6
+ 11 PA11      QSPI_D3  11   11    -    0/3    2/3   1/1   0/3   1/7
+ 42 PB10     QSPI_SCK  10    -    -     -     4/2   5/0   0/4   1/0
   1 PA01          SCK   1    -    -     -     1/1   2/1    -     -
  13 PA13          SCL  13    -    -    2/1    4/0   2/1   0/7   1/3
  12 PA12          SDA  12    -    -    2/0    4/1   2/0   0/6   1/2
@@ -584,17 +671,11 @@ Pin GPIO Pin name     IRQ  ADC  ADC  Serial Serial  TC    PWM   PWM
  31 PA31        SWDIO  15    -    -    7/3    1/3   6/1   2/1    -
  24 PA24       USB_DM   8    -    -    3/2    5/2   5/0   2/2    -
  25 PA25       USB_DP   9    -    -    3/3    5/3   5/1    -     -
-  8 PA08            -   -    8    2    0/0    2/1   0/0   0/0   1/4
-  9 PA09            -   9    9    3    0/1    2/0   0/1   0/1   1/5
- 10 PA10            -  10   10    -    0/2    2/2   1/0   0/2   1/6
- 11 PA11            -  11   11    -    0/3    2/3   1/1   0/3   1/7
  14 PA14            -  14    -    -    2/2    4/2   3/0   2/0   1/2
  18 PA18            -   2    -    -    1/2    3/2   3/0   1/2   0/6
  22 PA22            -   6    -    -    3/0    5/1   4/0   1/6   0/2
  23 PA23            -   7    -    -    3/1    5/0   4/1   1/7   0/3
  27 PA27            -  11    -    -     -      -     -     -     -
- 42 PB10            -  10    -    -     -     4/2   5/0   0/4   1/0
- 43 PB11            -  12    -    -     -     4/3   5/1   0/5   1/1
 === ==== ============ ==== ==== ==== ====== ====== ===== ===== =====
 
 For the definition of the table columns see the explanation at the table for
@@ -602,10 +683,10 @@ Adafruit ItsyBitsy M4 Express :ref:`samd51_pinout_table`.
 
 The default devices at the board are:
 
-- UART 1 at pins 6/7, labelled D0/D1
-- I2C 2 at pins 14/15, labelled SDA/SCL
-- SPI 1 at pins 16/17/18, labelled MOSI, MISO and SCK
-- DAC output on pins 0 and 4, labelled A0_D9 and A4_D13
+- UART 1 at pins PA16/PA17, labelled D0/D1
+- I2C 2 at pins PA12/PA13, labelled SDA/SCL
+- SPI 1 at pins PB22/PB23/PA01, labelled MOSI, MISO and SCK
+- DAC output on pins PA02 and PA05, labelled A0_D9 and A4_D13
 
 Seeed WIO Terminal pin assignment table
 ---------------------------------------
@@ -661,6 +742,12 @@ Pin GPIO Pin name     IRQ  ADC  ADC  Serial Serial  TC    PWM   PWM
 117 PD21       SD_DET  11    -    -    1/3   3/3     -    1/1    -
  83 PC19        SD_CS   3    -    -    6/3   0/3     -    0/3    -
  82 PC18      SD_MISO   2    -    -    6/2   0/2     -    0/2    -
+ 43 PB11      QSPI_CS  12    -    -     -     4/3   5/1   0/5   1/1
+  8 PA08      QSPI_D0   -    8    2    0/0    2/1   0/0   0/0   1/4
+  9 PA09      QSPI_D1   9    9    3    0/1    2/0   0/1   0/1   1/5
+ 10 PA10      QSPI_D2  10   10    -    0/2    2/2   1/0   0/2   1/6
+ 11 PA11      QSPI_D3  11   11    -    0/3    2/3   1/1   0/3   1/7
+ 42 PB10     QSPI_SCK  10    -    -     -     4/2   5/0   0/4   1/0
  80 PC16      SD_MOSI   0    -    -    6/0   0/1     -    0/0    -
  81 PC17       SD_SCK   1    -    -    6/1   0/0     -    0/1    -
  30 PA30        SWCLK  14    -    -    7/2   1/2    6/0   2/0    -
@@ -677,17 +764,11 @@ Pin GPIO Pin name     IRQ  ADC  ADC  Serial Serial  TC    PWM   PWM
   2 PA02            -   2    0    -     -     -      -     -     -
   3 PA03            -   3   10    -     -     -      -     -     -
   5 PA05            -   5    5    -     -    0/1    0/1    -     -
-  8 PA08            -   -    8    2    0/0   2/1    0/0   0/0   1/4
-  9 PA09            -   9    9    3    0/1   2/0    0/1   0/1   1/5
- 10 PA10            -  10   10    -    0/2   2/2    1/0   0/2   1/6
- 11 PA11            -  11   11    -    0/3   2/3    1/1   0/3   1/7
  14 PA14            -  14    -    -    2/2   4/2    3/0   2/0   1/2
  18 PA18            -   2    -    -    1/2   3/2    3/0   1/2   0/6
  19 PA19            -   3    -    -    1/3   3/3    3/1   1/3   0/7
  23 PA23            -   7    -    -    3/1   5/0    4/1   1/7   0/3
  27 PA27            -  11    -    -     -     -      -     -     -
- 42 PB10            -  10    -    -     -    4/2    5/0   0/4   1/0
- 43 PB11            -  12    -    -     -    4/3    5/1   0/5   1/1
  46 PB14            -  14    -    -    4/2    -     5/0   4/0   0/2
  49 PB17            -   1    -    -    5/1    -     6/1   3/1   0/5
  54 PB22            -  22    -    -    1/2   5/2    7/0    -     -
@@ -716,6 +797,12 @@ Pin GPIO Pin name     IRQ  ADC  ADC  Serial Serial  TC    PWM   PWM
 
 For the definition of the table columns see the explanation at the table for
 Adafruit ItsyBitsy M4 Express :ref:`samd51_pinout_table`.
+
+Default pin assignments:
+- UART 2 at pins PB27 and PB26, labelled RX and TX
+- I2C 4 at pins PA12 and PA13, labelled SCL0 and SDA0
+- I2C 3 at pins PA16 and PA17, labelled SCL1 and SDA1
+- SPI 5 at pins PB00, PB02 and PB03, labelle MISO, MOSI and SCK
 
 There seems to be no default pin assignment for this board.
 
@@ -783,10 +870,10 @@ Adafruit ItsyBitsy M4 Express :ref:`samd51_pinout_table`.
 
 The default devices at the board are:
 
-- UART 1 at pins 2/3, labelled RXD/TXD
-- I2C 5 at pins 20/21, labelled SDA/SCL
-- SPI 4 at pins 22/23/24, labelled MOSI, MISO and SCK
-- DAC output on pins 14 and 18, labelled A0 and A4
+- UART 2 at pins PA13/PA12, labelled RXD/TXD
+- I2C 5 at pins PA22/PA23, labelled SDA/SCL
+- SPI 4 at pins PB12/PB11/PB13, labelled MOSI, MISO and SCK
+- DAC output on pins PA02 and PA05, labelled A0 and A4
 
 Scripts for creating the pin assignment tables
 ----------------------------------------------
@@ -797,36 +884,36 @@ The tables shown above were created with small a Python script running on the ta
   from machine import Pin
   import os
 
-  def print_entry(e, txt):
+  def print_item(e, txt):
       print(txt, end=": ")
       if e == 255:
           print(" - ", end="")
       else:
           print("%d/%d" % (e >> 4, e & 0x0f), end="")
 
-  def print_pininfo(pin, info):
-      print("%3d" % pin, end=" ")
-      print("P%c%02d" % ("ABCD"[pin // 32], pin % 32), end="")
-      print(" %12s" % info[0], end="")
+  def print_pininfo(pin_id, name, info):
+
+      print("%3d" % pin_id, end=" ")
+      print("%4s %12s" % (info[0], name), end="")
       print(" IRQ:%2s" % (info[1] if info[1] != 255 else "-"), end="")
       print(" ADC0:%2s" % (info[2] if info[2] != 255 else "-"), end="")
       if len(info) == 7:
-          print_entry(info[3], " Serial1")
-          print_entry(info[4], " Serial2")
-          print_entry(info[5], " PWM1" if (info[5] >> 4) < 3 else "   TC")
-          print_entry(info[6], " PWM2")
+          print_item(info[3], " Serial1")
+          print_item(info[4], " Serial2")
+          print_item(info[5], " PWM1" if (info[5] >> 4) < 3 else "   TC")
+          print_item(info[6], " PWM2")
       else:
           print(" ADC1:%2s" % (info[3] if info[3] != 255 else "-"), end="")
-          print_entry(info[4], " Serial1")
-          print_entry(info[5], " Serial2")
-          print_entry(info[6], " TC")
-          print_entry(info[7], " PWM1")
-          print_entry(info[8], " PWM2")
+          print_item(info[4], " Serial1")
+          print_item(info[5], " Serial2")
+          print_item(info[6], " TC")
+          print_item(info[7], " PWM1")
+          print_item(info[8], " PWM2")
       print()
 
   def tblkey(i):
-      name = i[1][0]
-      if name != "-":
+      name = i[1]
+      if name != "":
           if len(name) < 3:
               return " " + name
           else:
@@ -834,17 +921,25 @@ The tables shown above were created with small a Python script running on the ta
       else:
           return "zzzzzzz%03d" % i[0]
 
-  def table(num = 127):
+  def table(num=127, sort=True):
       pintbl = []
+      inv_bd = {v: k for k, v in Pin.board.__dict__.items()}
       for i in range(num):
           try:
-              pintbl.append((i, pininfo(i)))
+              p = Pin(i)
+              pi = pininfo(p)
+              if p in inv_bd.keys():
+                  name = inv_bd[p]
+              else:
+                  name = ""
+              pintbl.append((i, name, pininfo(i)))
           except:
               pass
               # print("not defined")
 
-      pintbl.sort(key=tblkey)
+      if sort:
+          pintbl.sort(key=tblkey)
       for item in pintbl:
-          print_pininfo(item[0], item[1])
+          print_pininfo(item[0], item[1], item[2])
 
   table()
